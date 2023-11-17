@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Curreny Converter</title>
+   <style>
+      body{
+    background : url(https://th.bing.com/th/id/R.3e63df9231b66c8cc8c4aa0f2f976def?rik=jmw%2fIaII3zFLUQ&riu=http%3a%2f%2fgazettereview.com%2fwp-content%2fuploads%2f2016%2f07%2fcurrency.jpg&ehk=XclS4AwBKzxsdGQrr4eL80dJ6IMrru0T2u6qG5BhERo%3d&risl=&pid=ImgRaw&r=0); 
+    background-size: cover;
+}
+#select_from{
+    font-size: 20px;
+    color: blue;
+    cursor: pointer;
+
+}
+#convert_to {
+    font-size: 20px;
+    color:blue;
+    cursor: pointer;
+}
+
+#btn:hover 
+{
+    color: red;
+    background-color: white;
+    border-radius: 2px;
+    
+}
+#btn{
+    font-size: 20px;
+    color: blue;
+    box-shadow: 2px 2px 2px blue;
+    cursor: pointer;
+}
+.box{
+    font-size: 20px;
+    color: red;
+}
+#btn2{
+    color:black;
+    background-color: white;
+    font-size: 20px;
+}
+
+#mainbox{
+    border: 8px solid rgb(239, 236, 184);
+    margin-top: 2%;
+    padding: 20px;
+    border-radius: 1in;
+    background: url(https://img.freepik.com/premium-photo/stock-market-chart-stock-market-data-led-display-concept_488220-53129.jpg?w=740);
+    background-size: cover;
+}
+
+#input_currency{
+    font-size: 20px;
+    padding: 10px;
+
+}
+#output_currency{
+    font-size: 20px;
+    padding: 10px;
+
+}
+#head{
+    font-style: italic;
+    color:white;
+    font-size: 30px;
+    background-color: rgb(236, 232, 206);
+    background: url(https://ak.picdn.net/shutterstock/videos/4558550/thumb/1.jpg);
+    background-size: cover;
+    border-radius: 1in;
+    padding-left: 50px;
+}
+   </style>
+</head>
+<body>
+    <span><h2 id="head">CURRENCY CONVERTOR</h2></span>
+   <div  id="mainbox"  style="display: flex; justify-content: space-evenly;">
+      <select name="" id="select_from">
+         <option value=""><b>Select From</b></option>
+      </select>
+      <p id="from_country_name"></p>
+      <input type="number" placeholder="enter amount" id="input_currency">
+   
+      <select name="" id="convert_to">
+         <option value=""><b>Convert To</b></option>
+      </select>
+      <p id="to_country_name"></p>
+   
+      <input type="text" disabled placeholder="converted amount" id="output_currency">
+   
+      <button id="btn">convert</button>
+   
+   </div>
+<script>
+    let select_from = document.getElementById("select_from")
+let convert_to = document.getElementById("convert_to")
+let btn = document.getElementById("btn")
+let input_currency = document.getElementById("input_currency")
+let output_currency = document.getElementById("output_currency")
+let from_country_name  = document.getElementById("from_country_name")
+let to_country_name = document.getElementById("to_country_name")
+
+fetch("https://api.frankfurter.app/currencies")
+.then((response) => {
+    response.json()
+   .then((actual_curreny_data) => {
+      console.log(actual_curreny_data)
+      let currency_code = Object.keys(actual_curreny_data)
+      let currency_name = Object.values(actual_curreny_data)
+      console.log(currency_code);
+      console.log(currency_name);
+
+      //select_from.innerHTML = `<option>${currency_code}</option>`
+      for(let currency of currency_code)
+      {
+         select_from.innerHTML += `<option>${currency}</option>`
+         convert_to.innerHTML += `<option>${currency}</option>`
+      }
+   })
+   .catch()
+})
+.catch(() => {})
+
+
+btn.addEventListener("click",()=>{
+
+   //alert(input_currency.value)
+   let input = input_currency.value
+   console.log(select_from.value);
+   console.log(convert_to.value);
+   const host = 'api.frankfurter.app';
+   fetch(`https://${host}/latest?amount=${input}&from=${select_from.value}&to=${convert_to.value}`)
+     .then(resp => resp.json())
+     .then((data) => {
+      let converted_amount = Object.entries(data.rates)[0];
+      console.log(converted_amount[1]);
+      output_currency.value = converted_amount[1]
+     });
+
+
+
+
+
+})
+</script>
+
+</body>
+</html>
